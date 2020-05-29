@@ -1,11 +1,10 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 class ProportionalDerivative:
     """ Simple proportional-derivative control
     """
 
-    def __init__(self, k=1, phi=0.1, m=1):
+    def __init__(self, k=.1, phi=0.01, m=1):
         """
         Args:
             k: (float) proportional amplitude 
@@ -16,8 +15,6 @@ class ProportionalDerivative:
         self.m = m
         self.k = k
         self.phi = phi
-        
-        self.h = 0.01
 
     def __call__(self, x, a):
         """ Compute the change of px and dx
@@ -31,27 +28,43 @@ class ProportionalDerivative:
         px, dx = x
 
         # PD
-        px += self.h*dx
-        dx += self.h*(a - self.k*px - self.phi*dx)/self.m
+        px, dx = dx, (a - self.k*px - self.phi*dx)/self.m
 
         return np.array([px, dx])
 
 if __name__ == "__main__":
 
-    xx = []
-    T = 5000
+    import matplotlib.pyplot as plt
+    
+    store = []
+    T = 500
 
-    pd = ProportionalDerivative(k=1, phi=1.5, m=1.)
+    pd = ProportionalDerivative(k=1, phi=4, m=1.)
 
-    x = np.array([0.4, -0.8])
+    # simulate
+    x0 = np.array([0.0, 0.0])
+    x = x0.copy()
+    a = 0.25*np.pi
     for t in range(T):
-        a = .2
-        x = pd(x, a)
-        print(x.T)
-        xx.append(x.T)
+        x += 0.1*pd(x, a)
+        store.append(x.copy().T)
+    store = np.vstack(store)
+    
+    # render simulation
+    plt.ion()
+    x = x0[0]
 
-    xx = np.vstack(xx)
-    plt.plot(*xx.T)
-    plt.xlim([-0.1, 0.5])
-    plt.ylim([-0.8,0.8])
-    plt.show()
+    fig = plt.figure()
+    ax = fig.add_subplot(111, aspect="equal") 
+    target, = ax.plot([0, np.cos(a)], [0, np.sin(a)], lw=3, color="red")
+    armBase = ax.scatter(0,0,s=200, color="blue")
+    arm, = ax.plot([0, np.cos(x)], [0, np.sin(x)], lw=6, color="blue")
+    ax.set_xlim([-.2,1.2])
+    ax.set_ylim([-.2,1.2])    
+    for t in range(T):
+        x = store[t,0]
+        arm.set_data([0, np.cos(x)], [0, np.sin(x)])
+        plt.pause(0.01)
+    #
+
+    input() 
