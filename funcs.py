@@ -1,5 +1,18 @@
 import numpy as np
 
+# angle to visual forward model
+def g(mu):
+    """ Converts joint angle into ccordinates
+
+    Returns:
+        (float, float) x,y coordinates
+    """
+    return np.array([np.cos(mu), np.sin(mu)])
+
+def dg(mu):
+    return np.array([-np.sin(mu), np.cos(mu)])
+
+# PD controller 
 class ProportionalDerivative:
     """ Simple proportional-derivative control
     """
@@ -22,7 +35,7 @@ class ProportionalDerivative:
         Args:
             x: np.array(float, float) pair containing the variable (px) 
                 and its first order derivative (dx)
-            a: target value of px
+            a: (float) target value of px
         """
 
         px, dx = x
@@ -32,7 +45,11 @@ class ProportionalDerivative:
 
         return np.array([px, dx])
 
+# TEST -----------------------------------------------------------------------
+
 if __name__ == "__main__":
+    
+    # Test PD controller
 
     import matplotlib.pyplot as plt
     
@@ -68,3 +85,4 @@ if __name__ == "__main__":
     #
 
     input() 
+
