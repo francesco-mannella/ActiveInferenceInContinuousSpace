@@ -6,15 +6,14 @@ from plotter import Plotter
 
 def simulation():
 
-    real_mu = 0.5*np.pi
+    real_mu = 0*np.pi
 
-    model_mu = 0.4*np.pi
-    model_rho = 0.5*np.pi
-
-    stime = 100000
+    model_mu = 0*np.pi
+    model_rho = -0.1*np.pi
+    stime = 50000
 
     rng = np.random.RandomState()
-    plotter = Plotter(time_window=20000)
+    plotter = Plotter(time_window=stime)
 
     # init the generative model (agent) and the generative process (environment)
     gprocess = Env(rng)
@@ -34,11 +33,12 @@ def simulation():
 
         # update plot every n steps
         plotter.append_mu(gprocess.mu, gmodel.mu)
-        if t % 2000 == 0:
+        if t % 1000 == 0:
             plotter.sensed_arm.update(state[0], state[1:])
             plotter.real_arm.update(gprocess.istate[0], gprocess.istate[1:])
             plotter.generated_arm.update(gstate[0], gstate[1:])
             plotter.update()
+
 
 
 if __name__ == "__main__":

@@ -36,9 +36,9 @@ class Model:
         self.arm_length = 1
 
         # stores for sensory states and action
-        self.sp = self.mu
-        self.sv = g(self.mu)
-        self.da = 0.01
+        self.sp = None
+        self.sv = None
+        self.da = 1
 
         # init state od dynamics
         self.f = np.zeros(2)
@@ -88,8 +88,10 @@ class Model:
 
         # current state
         sp, sv = state[0], state[1:]
+        self.sp = sp if self.sp is None else self.sp
+        self.sv = sv if self.sv is None else self.sv
 
-        df = self.dynamics([self.mu, self.dmu], self.rho)
+        df = self.dynamics(self.f, self.rho)
         self.f += self.h*df
 
         # modify central value of latent variable through gradient descent
@@ -97,7 +99,7 @@ class Model:
             + (sp - self.mu) / self.sp_sigma \
             + np.dot(np.dot(self.inv_sv_sigma, dg(self.mu)), (sv - g(self.mu))) \
             + self.sp_sigma * self.f[1] * (self.dmu - self.f[0])
-        self.mu += self.h*self.dmu + self.h*dmu
+        self.mu += self.dmu + self.h*dmu
 
         # modify first order of central value of latent variable through gradient descent
         ddmu = \
@@ -105,8 +107,8 @@ class Model:
         self.dmu += self.h*ddmu
 
         # modify action variable through gradient descent
-        dsp = (sp - self.sp)/self.da
-        dsv = (sv - self.sv)/self.da
+        dsp = 1 * np.abs(sp - self.sp)
+        dsv = 1 * np.ones(2) * np.abs(sv - self.sv)
         self.da = \
             - dsp * (sp - self.mu) / self.sp_sigma \
             - np.dot(np.dot(self.inv_sv_sigma, dsv), (sv - g(self.mu)))

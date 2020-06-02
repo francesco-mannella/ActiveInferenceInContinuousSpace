@@ -1,6 +1,7 @@
 import numpy as np
 from funcs import ProportionalDerivative as PropDer, g
 
+
 class Env:
     """ A 2D arm with 1DoF controlled by a proportional-derivative
     dynamical system (velocity control)
@@ -18,8 +19,9 @@ class Env:
         self.dmu = 0    # derivative of the central value
 
         # sensory distributions
-        self.sp_sigma = 0.001    # standard deviation of proprioceptive sensory state (joint position)
-        self.sv_sigma = 0.001    # standard deviation of visual state (xy coordinates)
+        # standard deviation of proprioceptive sensory state (joint position)
+        self.sp_sigma = 0.002
+        self.sv_sigma = 0.002    # standard deviation of visual state (xy coordinates)
 
         self.h = 0.001   # integration step (dt/decay)
 
@@ -40,7 +42,7 @@ class Env:
         """
 
         # update dynamics
-        x = self.dynamics([self.mu, action], self.mu + action)
+        x = self.dynamics([self.mu, self.dmu], action)
         self.mu += self.h*x[0]
         self.dmu += self.h*x[1]
 
@@ -58,8 +60,8 @@ class Env:
         self.istate = [self.mu, *self.arm_length*g(self.mu)]
 
         state = self.rng.randn(3) * \
-                [self.sp_sigma, self.sv_sigma, self.sv_sigma] + \
-                self.istate
+            [self.sp_sigma, self.sv_sigma, self.sv_sigma] + \
+            self.istate
 
         return state
 
