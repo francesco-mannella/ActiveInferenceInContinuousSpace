@@ -3,12 +3,13 @@ from env import Env
 from model import Model
 from plotter import Plotter
 
+
 def simulation():
 
     real_mu = 0.5*np.pi
 
-    model_mu = 0.5*np.pi
-    model_rho = 0.55*np.pi
+    model_mu = 0.4*np.pi
+    model_rho = 0.5*np.pi
 
     stime = 100000
 
@@ -33,10 +34,12 @@ def simulation():
 
         # update plot every n steps
         plotter.append_mu(gprocess.mu, gmodel.mu)
-        if t%2000 == 0:
+        if t % 2000 == 0:
             plotter.sensed_arm.update(state[0], state[1:])
             plotter.real_arm.update(gprocess.istate[0], gprocess.istate[1:])
             plotter.generated_arm.update(gstate[0], gstate[1:])
             plotter.update()
 
-if __name__ == "__main__": simulation()
+
+if __name__ == "__main__":
+    simulation()

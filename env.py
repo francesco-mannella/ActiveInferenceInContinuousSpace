@@ -2,7 +2,7 @@ import numpy as np
 from funcs import ProportionalDerivative as PropDer, g
 
 class Env:
-    """ A 2D arm with 1DoF controlled by a proportional-derivative 
+    """ A 2D arm with 1DoF controlled by a proportional-derivative
     dynamical system (velocity control)
     """
 
@@ -12,19 +12,19 @@ class Env:
             rng: (np.random.RandomState) a random number generator
         """
         self.rng = rng
-        
+
         # latentdistribution
         self.mu = 0    # central value of the distribution of the latent variable
-        self.dmu = 0    # derivative of the central value 
+        self.dmu = 0    # derivative of the central value
 
         # sensory distributions
-        self.sp_sigma = 0.001    # standard deviation of proprioceptive sensory state (joint position) 
-        self.sv_sigma = 0.001    # standard deviation of visual state (xy coordinates)    
+        self.sp_sigma = 0.001    # standard deviation of proprioceptive sensory state (joint position)
+        self.sv_sigma = 0.001    # standard deviation of visual state (xy coordinates)
 
         self.h = 0.001   # integration step (dt/decay)
 
         self.arm_length = 1
-                
+
         self.dynamics = PropDer(k=1, phi=2)
 
     def step(self, action):
@@ -36,21 +36,21 @@ class Env:
 
         Returns:
             sensory state: (float, float, float) joint angle, visual x, visual y
-            
+
         """
-        
+
         # update dynamics
-        x = self.h*self.dynamics([self.mu, action], self.mu + action)
-        self.mu += x[0]
-        self.dmu += x[1]
-        
+        x = self.dynamics([self.mu, action], self.mu + action)
+        self.mu += self.h*x[0]
+        self.dmu += self.h*x[1]
+
         # sensory state
         state = self.generateSensoryData()
 
         return state
 
-    def generateSensoryData(self): 
-        """ Sensory state from latent distribution 
+    def generateSensoryData(self):
+        """ Sensory state from latent distribution
 
         Returns:
             (float, float, float) joint angle, visual x, visual y
@@ -65,18 +65,17 @@ class Env:
 
     def reset(self, mu=0, dmu=0):
         """ Reset variables
-        
+
         Args:
             mu: (float) initial value of mu
             dmu: (float) initial value of derivative
 
         Returns:
             (float, float, float) joint angle, visual x, visual y
-        
+
         """
-        
+
         self.mu = mu
         self.dmu = dmu
 
         return self.generateSensoryData()
-
