@@ -20,8 +20,8 @@ class Env:
 
         # sensory distributions
         # standard deviation of proprioceptive sensory state (joint position)
-        self.sp_sigma = 0.002
-        self.sv_sigma = 0.002    # standard deviation of visual state (xy coordinates)
+        self.sp_sigma = 0.001
+        self.sv_sigma = 0.001    # standard deviation of visual state (xy coordinates)
 
         self.h = 0.001   # integration step (dt/decay)
 

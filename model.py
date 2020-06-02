@@ -107,8 +107,8 @@ class Model:
         self.dmu += self.h*ddmu
 
         # modify action variable through gradient descent
-        dsp = 1 * np.abs(sp - self.sp)
-        dsv = 1 * np.ones(2) * np.abs(sv - self.sv)
+        dsp = np.abs(sp - self.sp)
+        dsv = np.abs(sv - self.sv)
         self.da = \
             - dsp * (sp - self.mu) / self.sp_sigma \
             - np.dot(np.dot(self.inv_sv_sigma, dsv), (sv - g(self.mu)))

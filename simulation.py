@@ -40,6 +40,5 @@ def simulation():
             plotter.update()
 
 
-
 if __name__ == "__main__":
     simulation()
