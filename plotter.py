@@ -16,7 +16,7 @@ class Arm:
         self.hand = self.ax.scatter(0, 1, color=color, s=200, zorder=zorder, alpha=alpha)
 
         for a in np.linspace(0, 2*np.pi, 5):
-            self.ax.plot([0, np.cos(a)], [0, np.sin(a)])
+            self.ax.plot([0, np.cos(a)], [0, np.sin(a)], color="black", lw=0.5)
 
     def update(self, arm_angle, hand_pos, secs=0.001):
 
@@ -36,12 +36,18 @@ class Plotter:
         self.ax.set_ylim([-1.5, 2])
 
         self.real_arm = Arm(self.ax, zorder=0, alpha=1)
-        self.sensed_arm = Arm(self.ax, "gray", zorder=10, alpha=0.5)
-        self.generated_arm = Arm(self.ax, "#ff5555", zorder=10, alpha=0.5)
+        self.sensed_arm = Arm(self.ax, "#0000aa", zorder=10, alpha=0.8)
+        self.generated_arm = Arm(self.ax, "#aa0000", zorder=10, alpha=0.8)
+        self.target_arm = Arm(self.ax, "#00aa00", zorder=10, alpha=0.8)
 
-        self.ax.legend([self.real_arm.arm, self.sensed_arm.arm,
-                        self.generated_arm.arm], ["real", "perceived",
-                                                  "generated from model"])
+        self.ax.legend([self.real_arm.arm,
+                        self.sensed_arm.arm,
+                        self.generated_arm.arm,
+                        self.target_arm.arm],
+                       ["real",
+                        "perceived",
+                        "generated from model",
+                        "target"])
 
         self.time_window = time_window
         self.ax_logs = self.figure.add_subplot(gs[6:, :], aspect="auto")
