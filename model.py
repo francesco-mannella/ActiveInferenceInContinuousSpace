@@ -26,12 +26,13 @@ class Model:
 
         # sensory
         # standard deviation of proprioceptive sensory state (joint position)
-        self.sp_sigma = 0.001
-        self.sv_sigma = 0.001*np.eye(2)    # covariance matrix of visual state (xy coordinates)
+        self.sp_sigma = 0.01
+        self.sv_sigma = 0.01*np.eye(2)    # covariance matrix of visual state (xy coordinates)
         self.inv_sv_sigma = np.linalg.inv(self.sv_sigma)    # inverse of sv_sigma
         self.sm_sigma = 0.001    # standard deviation of angle change (joint angular velocity)
 
-        self.h = 0.001   # integration step (dt/decay)
+        self.h = 0.01   # integration step (dt/decay)
+        self.fh = 0.011   # dynamics integration step
 
         self.arm_length = 1
 
@@ -91,20 +92,18 @@ class Model:
         self.sp = sp if self.sp is None else self.sp
         self.sv = sv if self.sv is None else self.sv
 
-        df = self.dynamics(self.f, self.rho)
-        self.f += self.h*df
+        # dynamics step
+        df = self.dynamics(self.f, self.rho*self.fh)
 
         # modify central value of latent variable through gradient descent
         dmu = \
             + (sp - self.mu) / self.sp_sigma \
             + np.dot(np.dot(self.inv_sv_sigma, dg(self.mu)), (sv - g(self.mu))) \
             + self.sp_sigma * self.f[1] * (self.dmu - self.f[0])
-        self.mu += self.dmu + self.h*dmu
 
         # modify first order of central value of latent variable through gradient descent
         ddmu = \
             self.sm_sigma * (self.f[0] - self.dmu)
-        self.dmu += self.h*ddmu
 
         # modify action variable through gradient descent
         dsp = np.abs(sp - self.sp)
@@ -112,7 +111,12 @@ class Model:
         self.da = \
             - dsp * (sp - self.mu) / self.sp_sigma \
             - np.dot(np.dot(self.inv_sv_sigma, dsv), (sv - g(self.mu)))
+
+        # updates
+        self.dmu += self.h*ddmu
         self.a += self.h*self.da
+        self.mu += self.dmu + self.h*dmu
+        self.f += self.h*df
 
         # store state of the step as the previous state of next step
         self.sp, self.sv = sp, sv.copy()

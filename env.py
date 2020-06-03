@@ -11,6 +11,7 @@ class Env:
         """
         Args:
             rng: (np.random.RandomState) a random number generator
+
         """
         self.rng = rng
 
@@ -20,10 +21,10 @@ class Env:
 
         # sensory distributions
         # standard deviation of proprioceptive sensory state (joint position)
-        self.sp_sigma = 0.001
-        self.sv_sigma = 0.001    # standard deviation of visual state (xy coordinates)
+        self.sp_sigma = 0.011
+        self.sv_sigma = 0.011   # standard deviation of visual state (xy coordinates)
 
-        self.h = 0.001   # integration step (dt/decay)
+        self.fh = 0.01   # dynamics integration step (dt/decay)
 
         self.arm_length = 1
 
@@ -33,7 +34,6 @@ class Env:
         """ A step of the simulation
 
         Args:
-
             action: (float) Joint angle change
 
         Returns:
@@ -43,8 +43,8 @@ class Env:
 
         # update dynamics
         x = self.dynamics([self.mu, self.dmu], action)
-        self.mu += self.h*x[0]
-        self.dmu += self.h*x[1]
+        self.mu += self.fh*x[0]
+        self.dmu += self.fh*x[1]
 
         # sensory state
         state = self.generateSensoryData()

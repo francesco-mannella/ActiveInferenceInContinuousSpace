@@ -9,8 +9,8 @@ def simulation():
     real_mu = 0*np.pi
 
     model_mu = 0*np.pi
-    model_rho = -0.1*np.pi
-    stime = 50000
+    model_rho = -0.5*np.pi
+    stime = 80000
 
     rng = np.random.RandomState()
     plotter = Plotter(time_window=stime)
@@ -33,11 +33,13 @@ def simulation():
 
         # update plot every n steps
         plotter.append_mu(gprocess.mu, gmodel.mu)
-        if t % 1000 == 0:
+        if t % 200 == 0 or t == stime-1:
             plotter.sensed_arm.update(state[0], state[1:])
             plotter.real_arm.update(gprocess.istate[0], gprocess.istate[1:])
             plotter.generated_arm.update(gstate[0], gstate[1:])
             plotter.update()
+
+    input("Press any button to close.")
 
 
 if __name__ == "__main__":

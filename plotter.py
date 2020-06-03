@@ -46,8 +46,10 @@ class Plotter:
         self.time_window = time_window
         self.ax_logs = self.figure.add_subplot(gs[6:, :], aspect="auto")
         self.ax_logs.set_xlim([0, self.time_window])
-        self.ax_logs.set_ylim([-0.3*np.pi, 0.3*np.pi])
+        self.ax_logs.set_ylim([-0.5*np.pi, 0.5*np.pi])
         self.ax_logs.set_xticks([])
+        self.ax_logs.set_yticks([-0.5*np.pi, 0, 0.5*np.pi])
+        self.ax_logs.set_yticklabels([r"$-\frac{\pi}{2}$", "$0$", r"$\frac{\pi}{2}$"])
         self.real_mu, = self.ax_logs.plot(0, 0, color="black", lw=1, zorder=20)
         self.model_mu, = self.ax_logs.plot(0, 0, color="red", lw=2)
         self.ax_logs.legend([self.real_mu, self.model_mu], ["real $\mu$", "model $\mu$"])
