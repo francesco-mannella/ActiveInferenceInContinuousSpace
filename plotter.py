@@ -12,8 +12,10 @@ class Arm:
 
         self.ax = ax
 
-        self.arm, = self.ax.plot([0, 0], [0, 1], color=color, lw=3, zorder=zorder, alpha=alpha)
-        self.hand = self.ax.scatter(0, 1, color=color, s=200, zorder=zorder, alpha=alpha)
+        self.arm, = self.ax.plot([0, 0], [0, 1], color=color,
+                                 lw=3, zorder=zorder, alpha=alpha)
+        self.hand = self.ax.scatter(0, 1, color=color, s=200,
+                                    zorder=zorder, alpha=alpha)
 
         for a in np.linspace(0, 2*np.pi, 5):
             self.ax.plot([0, np.cos(a)], [0, np.sin(a)], color="black", lw=0.5)
@@ -55,10 +57,12 @@ class Plotter:
         self.ax_logs.set_ylim([-0.5*np.pi, 0.5*np.pi])
         self.ax_logs.set_xticks([])
         self.ax_logs.set_yticks([-0.5*np.pi, 0, 0.5*np.pi])
-        self.ax_logs.set_yticklabels([r"$-\frac{\pi}{2}$", "$0$", r"$\frac{\pi}{2}$"])
+        self.ax_logs.set_yticklabels(
+            [r"$-\frac{\pi}{2}$", "$0$", r"$\frac{\pi}{2}$"])
         self.real_mu, = self.ax_logs.plot(0, 0, color="black", lw=1, zorder=20)
         self.model_mu, = self.ax_logs.plot(0, 0, color="red", lw=2)
-        self.ax_logs.legend([self.real_mu, self.model_mu], ["real $\mu$", "model $\mu$"])
+        self.ax_logs.legend([self.real_mu, self.model_mu],
+                            ["real $\mu$", "model $\mu$"])
         self.store_real_mu = []
         self.store_model_mu = []
 
