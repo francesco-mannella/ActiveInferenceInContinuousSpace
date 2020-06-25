@@ -19,7 +19,7 @@ def dg(mu):
 
 
 class ProportionalDerivative:
-    """ Simple proportional-derivative control
+    """ Simple proportional-derivative-like control
     """
 
     def __init__(self, k=.1, phi=0.01, m=1):
