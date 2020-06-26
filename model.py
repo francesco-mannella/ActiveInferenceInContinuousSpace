@@ -29,10 +29,10 @@ class Model:
         self.sp_sigma = 0.01
         self.sv_sigma = 0.01*np.eye(2)    # covariance matrix of visual state (xy coordinates)
         self.inv_sv_sigma = np.linalg.inv(self.sv_sigma)    # inverse of sv_sigma
-        self.sm_sigma = 0.001    # standard deviation of angle change (joint angular velocity)
+        self.sm_sigma = 0.001   # standard deviation of angle change (joint angular velocity)
 
         self.h = 0.01   # integration step (dt/decay)
-        self.fh = 0.011   # dynamics integration step
+        self.fh = 0.01  # dynamics integration step
 
         self.arm_length = 1
 
@@ -106,8 +106,8 @@ class Model:
             self.sm_sigma * (self.f[0] - self.dmu)
 
         # modify action variable through gradient descent
-        dsp = np.abs(sp - self.sp)
-        dsv = np.abs(sv - self.sv)
+        dsp = self.h*(1/self.dynamics.k)
+        dsv = self.h*(1/self.dynamics.k)*np.ones_like(sv)
         self.da = \
             - dsp * (sp - self.mu) / self.sp_sigma \
             - np.dot(np.dot(self.inv_sv_sigma, dsv), (sv - g(self.mu)))
