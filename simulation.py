@@ -1,3 +1,4 @@
+# %%
 import numpy as np
 from env import Env
 from model import Model
@@ -16,7 +17,8 @@ def simulation():
     rng = np.random.RandomState()
     plotter = Plotter(time_window=stime)
 
-    # init the generative model (agent) and the generative process (environment)
+    # init the generative model (agent) and the generative process
+    # (environment)
     gprocess = Env(rng)
     gmodel = Model(rng, mu=model_mu, rho=model_rho)
 

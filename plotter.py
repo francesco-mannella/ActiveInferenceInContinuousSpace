@@ -2,9 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib import rc
-rc('font', **{'family': 'sans-serif', 'sans-serif': ['Verdana']})
+
+
+#rc('font', **{'family': 'sans-serif', 'sans-serif': ['Verdana']})
 rc('text', usetex=True)
 
+np.
 
 class Arm:
 

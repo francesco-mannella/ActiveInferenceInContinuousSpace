@@ -51,7 +51,8 @@ class Model:
         """ Generate a 'fake' sensory state from internal distributions
 
         Returns:
-            generated sensory state: (float, float, float) joint angle, visual x, visual y
+            generated sensory state: (float, float, float) joint angle,
+                visual x, visual y
         """
 
         gstate = np.zeros(3)
@@ -101,7 +102,8 @@ class Model:
             + np.dot(np.dot(self.inv_sv_sigma, dg(self.mu)), (sv - g(self.mu))) \
             + self.sp_sigma * self.f[1] * (self.dmu - self.f[0])
 
-        # modify first order of central value of latent variable through gradient descent
+        # modify first order of central value of latent variable through
+        #   gradient descent
         ddmu = \
             self.sm_sigma * (self.f[0] - self.dmu)
 
