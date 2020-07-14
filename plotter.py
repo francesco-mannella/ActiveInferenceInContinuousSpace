@@ -27,8 +27,13 @@ class Arm:
 
 class Plotter:
 
-    def __init__(self, time_window=2000, title=None):
+    def __init__(self, time_window=2000, title=None, ioff=True):
 
+        if ioff:
+            plt.ioff()
+        else:
+            plt.ion()
+            
         gs = gridspec.GridSpec(8, 4)
 
         self.figure = plt.figure(figsize=(4, 8))

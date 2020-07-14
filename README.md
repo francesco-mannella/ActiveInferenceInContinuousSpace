@@ -4,9 +4,10 @@ A 1Dof 2D arm controlled through active inference.
 
 * ***[env.py](env.py)***: implements the generative process (the real arm and its dynamics)
 * ***[model.py](model.py)***: implements the generative model (internal model of arm  and dynamics)
-* ***[simulation.py](simulation.py)***: a test with the main loop of iteration. At each timestep, first the model is updated based on the current sensory state. Then the environment (the generative process is updated based on the action returned by the model.
+* ***[simulation.ipynb](simulation.ipynb)***: a test with the main loop of iteration. At each timestep, first the model is updated based on the current sensory state. Then the environment (the generative process is updated based on the action returned by the model. Three simulations with different precisions are presented.
 * ***[funcs.py](funcs.py)***: Utility functions as the forward model g(mu) from the proprioceptive state to the 2D coordinates of the hand, and the dynamical system (a proportional-derivative controller)
 * ***[plotter.py](plotter.py)***: a collection of objects for plotting
+* ***[mkvideo.py](mkvideo.py)***: utility to make gif videos from simulations
 * ***[Gradients.ipynb](Gradients.ipynb)***: A notebook describing the derivation of gradients from the free energy equation
 
 ### References

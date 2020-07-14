@@ -1,4 +1,3 @@
-import numpy as np
 from funcs import ProportionalDerivative as PropDer, g
 
 
@@ -11,15 +10,16 @@ class Env:
         """
         Args:
             rng: (np.random.RandomState) a random number generator
-
         """
         self.rng = rng
 
-        # latentdistribution
-        self.mu = 0    # central value of the distribution of the latent variable
-        self.dmu = 0    # derivative of the central value
+        # -- latent distribution
+        # central value of the distribution of the latent variable
+        self.mu = 0
+        # derivative of the central value
+        self.dmu = 0
 
-        # sensory distributions
+        # -- sensory distributions
         # standard deviation of proprioceptive sensory state (joint position)
         self.set_sigma(0.2)
 
@@ -50,7 +50,6 @@ class Env:
         Returns:
             sensory state: (float, float, float) joint angle,
                            visual x, visual y
-
         """
 
         # update dynamics
@@ -86,7 +85,6 @@ class Env:
 
         Returns:
             (float, float, float) joint angle, visual x, visual y
-
         """
 
         self.mu = mu
