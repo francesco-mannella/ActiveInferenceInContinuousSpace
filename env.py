@@ -21,14 +21,25 @@ class Env:
 
         # sensory distributions
         # standard deviation of proprioceptive sensory state (joint position)
-        self.sp_sigma = 0.013
-        self.sv_sigma = 0.013  # standard deviation of visual state (xy coordinates)
+        self.set_sigma(0.2)
 
-        self.fh = 0.005   # dynamics integration step (dt/decay)
+        self.fh = 0.008   # dynamics integration step (dt/decay)
 
         self.arm_length = 1
 
         self.dynamics = PropDer(k=1, phi=2)
+
+    def set_sigma(self, sigma):
+        """
+        Set sigma values
+
+        Args:
+            sigma: float, the new value for standard deviations
+        """
+        self.sigma = sigma
+        self.sp_sigma = self.sigma
+        # standard deviation of visual state (xy coordinates)
+        self.sv_sigma = self.sigma
 
     def step(self, action):
         """ A step of the simulation
@@ -37,7 +48,8 @@ class Env:
             action: (float) Joint angle change
 
         Returns:
-            sensory state: (float, float, float) joint angle, visual x, visual y
+            sensory state: (float, float, float) joint angle,
+                           visual x, visual y
 
         """
 

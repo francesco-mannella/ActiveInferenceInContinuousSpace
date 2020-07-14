@@ -11,7 +11,8 @@ class Model:
         """
         Args:
             rng: (np.random.RandomState) a random number generator
-            mu: (float) initial central value of the distribution of the latent variable
+            mu: (float) initial central value of the distribution of the
+                latent variable
             dmu: (float) initial derivative of the central value
         """
 
@@ -20,19 +21,19 @@ class Model:
         self.rho = rho   # target position
 
         # latentdistribution
-        self.mu = mu   # central value of the distribution of the latent variable
-        self.dmu = dmu    # derivative of the central value
-        self.a = 0    # current angular velocity (action)
+        # central value of the distribution of the latent variable
+        self.mu = mu
+        # derivative of the central value
+        self.dmu = dmu
+        # current angular velocity (action)
+        self.a = 0
 
         # sensory
         # standard deviation of proprioceptive sensory state (joint position)
-        self.sp_sigma = 0.01
-        self.sv_sigma = 0.01*np.eye(2)    # covariance matrix of visual state (xy coordinates)
-        self.inv_sv_sigma = np.linalg.inv(self.sv_sigma)    # inverse of sv_sigma
-        self.sm_sigma = 0.001   # standard deviation of angle change (joint angular velocity)
+        self.set_sigma(0.1)
 
-        self.h = 0.01   # integration step (dt/decay)
-        self.fh = 0.01  # dynamics integration step
+        self.h = 0.008   # integration step (dt/decay)
+        self.fh = 0.008  # dynamics integration step
 
         self.arm_length = 1
 
@@ -47,6 +48,22 @@ class Model:
         # the dynamical model object
         self.dynamics = PropDer(k=1, phi=2)
 
+    def set_sigma(self, sigma):
+        """
+        Set sigma values
+
+        Args:
+            sigma: float, the new value for standard deviations
+        """
+        self.sigma = sigma
+        self.sp_sigma2 = self.sigma**2
+        # covariance matrix of visual state (xy coordinates)
+        self.sv_sigma2 = (self.sigma**2)*np.eye(2)
+        # inverse of sv_sigma
+        self.inv_sv_sigma2 = np.linalg.inv(self.sv_sigma2)
+        # standard deviation of angle change (joint angular velocity)
+        self.sm_sigma2 = (self.sigma**2)
+
     def generate(self):
         """ Generate a 'fake' sensory state from internal distributions
 
@@ -56,10 +73,10 @@ class Model:
         """
 
         gstate = np.zeros(3)
-        gstate[0] = self.sp_sigma*self.rng.randn() + self.mu
+        gstate[0] = self.sp_sigma2*self.rng.randn() + self.mu
         gstate[1:] = np.random.multivariate_normal(
             self.arm_length*g(self.mu),
-            self.sv_sigma)
+            np.sqrt(self.sv_sigma2))
         self.gstate = gstate
         return gstate
 
@@ -76,11 +93,9 @@ class Model:
         p(s, mu) = p(sp|mu)*p(sv|mu)*p(dmu|mu, pho)
 
         Args:
-
             state: (float, float, float) joint angle, visual x, visual y
 
         Returns
-
             action: (float) updated angular velocity
 
         """
@@ -98,21 +113,21 @@ class Model:
 
         # modify central value of latent variable through gradient descent
         dmu = \
-            + (sp - self.mu) / self.sp_sigma \
-            + np.dot(np.dot(self.inv_sv_sigma, dg(self.mu)), (sv - g(self.mu))) \
-            + self.sp_sigma * self.f[1] * (self.dmu - self.f[0])
+            + (sp - self.mu) / self.sp_sigma2 \
+            + np.dot(np.dot(self.inv_sv_sigma2, dg(self.mu)),
+                     (sv - g(self.mu))) \
+            + self.f[1] * (self.dmu - self.f[0]) / self.sp_sigma2
 
         # modify first order of central value of latent variable through
         #   gradient descent
-        ddmu = \
-            self.sm_sigma * (self.f[0] - self.dmu)
+        ddmu = (self.f[0] - self.dmu) / self.sm_sigma2
 
         # modify action variable through gradient descent
         dsp = self.h*(1/self.dynamics.k)
         dsv = self.h*(1/self.dynamics.k)*np.ones_like(sv)
         self.da = \
-            - dsp * (sp - self.mu) / self.sp_sigma \
-            - np.dot(np.dot(self.inv_sv_sigma, dsv), (sv - g(self.mu)))
+            - dsp * (sp - self.mu) / self.sp_sigma2 \
+            - np.dot(np.dot(self.inv_sv_sigma2, dsv), (sv - g(self.mu)))
 
         # updates
         self.dmu += self.h*ddmu

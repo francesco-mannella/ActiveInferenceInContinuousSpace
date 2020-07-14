@@ -1,20 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+
 from matplotlib import rc
-
-
-#rc('font', **{'family': 'sans-serif', 'sans-serif': ['Verdana']})
 rc('text', usetex=True)
 
-np.
 
 class Arm:
 
     def __init__(self, ax, color="black", zorder=0, alpha=1):
 
         self.ax = ax
-
         self.arm, = self.ax.plot([0, 0], [0, 1], color=color,
                                  lw=3, zorder=zorder, alpha=alpha)
         self.hand = self.ax.scatter(0, 1, color=color, s=200,
@@ -31,7 +27,7 @@ class Arm:
 
 class Plotter:
 
-    def __init__(self, time_window=2000):
+    def __init__(self, time_window=2000, title=None):
 
         gs = gridspec.GridSpec(8, 4)
 
@@ -39,6 +35,9 @@ class Plotter:
         self.ax = self.figure.add_subplot(gs[:6, :], aspect="equal")
         self.ax.set_xlim([-1.5, 1.5])
         self.ax.set_ylim([-1.5, 2])
+
+        if title is not None:
+            self.ax.set_title(title)
 
         self.real_arm = Arm(self.ax, zorder=0, alpha=1)
         self.sensed_arm = Arm(self.ax, "#0000aa", zorder=10, alpha=0.4)

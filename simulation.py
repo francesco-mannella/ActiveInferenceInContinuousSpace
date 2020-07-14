@@ -1,27 +1,40 @@
-# %%
+# %% Headings
 import numpy as np
 from env import Env
 from model import Model
 from plotter import Plotter
 from funcs import g
 
+# %% Constants
 
-def simulation():
+real_mu = 0*np.pi
+model_mu = 0*np.pi
+model_rho = -0.35*np.pi
+stime = 20000
 
-    real_mu = 0*np.pi
+rng = np.random.RandomState()
 
-    model_mu = 0*np.pi
-    model_rho = -0.35*np.pi
-    stime = 50000
+# %% Initializing the simulation objects for the first simulation
 
-    rng = np.random.RandomState()
-    plotter = Plotter(time_window=stime)
+gprocess_sigmas = 0.2, 0.2, 0.2
+gmodel_sigmas = 0.1, 0.15, 0.2
+
+title = "gp\_sigma=%6.4f gm\_sigma=%6.4f"
+for gprocess_sigma, gmodel_sigma in zip(gprocess_sigmas, gmodel_sigmas):
+
+    plotter = Plotter(
+        time_window=stime,
+        title=title % (gprocess_sigma, gmodel_sigma))
 
     # init the generative model (agent) and the generative process
     # (environment)
     gprocess = Env(rng)
     gmodel = Model(rng, mu=model_mu, rho=model_rho)
 
+    gprocess.set_sigma(gprocess_sigma)
+    gmodel.set_sigma(gmodel_sigma)
+
+    # %%  Iteration Loop
     state = gprocess.reset(mu=real_mu)
     for t in range(stime):
 
@@ -44,7 +57,3 @@ def simulation():
             plotter.update()
 
     input("Press any button to close.")
-
-
-if __name__ == "__main__":
-    simulation()
