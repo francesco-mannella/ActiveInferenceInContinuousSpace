@@ -34,6 +34,8 @@ for gprocess_sigma, gmodel_sigma in zip(gprocess_sigmas, gmodel_sigmas):
     gprocess.set_sigma(gprocess_sigma)
     gmodel.set_sigma(gmodel_sigma)
 
+
+
     # %%  Iteration Loop
     state = gprocess.reset(mu=real_mu)
     for t in range(stime):
